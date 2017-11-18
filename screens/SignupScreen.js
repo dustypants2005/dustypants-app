@@ -17,8 +17,8 @@ export default class SignupScreen extends Component {
   }
 
   _signup(){
-      const _getUrl = (username, password, email) => {
-        return `https://us-west-2.api.scaphold.io/graphql/testdemo?query=mutation CreateUser($input: CreateUserInput!){
+      const url = (username, password, email) => {
+        return `https://us-west-2.api.scaphold.io/graphql/dustypants?query=mutation CreateUser($input: CreateUserInput!){
           createUser(input:$input){
             token
             viewer{
@@ -37,6 +37,15 @@ export default class SignupScreen extends Component {
           }
         }`;
         }
+        fetch(url, { method: 'POST' })
+        .then((res) => res.json())
+        .then(res =>{
+          const { loginUser } = res.data;
+          sh.SetLoginUser(loginUser).done();
+          navigate('Home', loginUser);
+        })
+        .catch(e => console.log( 'Error Login Post: ', JSON.stringify(e)))
+        .done();
   }
 
   render() {

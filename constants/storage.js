@@ -1,4 +1,5 @@
 export default {
   token: 'token',
-  user: 'user'
+  user: 'user',
+  loginUser: 'loginUser'
 }

@@ -20,13 +20,15 @@ export default class LoginScreen extends Component {
     this.state = {
       username: '',
       password: '',
+      user: {},
+      token: '',
       isCached: false
     }    
   }
 
   async _login(navigate) {
     const _getUrl = (username, password) => {
-      return `https://us-west-2.api.scaphold.io/graphql/testdemo?query=mutation LoginUserQuery ($input: LoginUserInput!) {
+      return `https://us-west-2.api.scaphold.io/graphql/dustypants?query=mutation LoginUserQuery ($input: LoginUserInput!) {
         loginUser(input: $input) {
           token
           user {
@@ -45,29 +47,27 @@ export default class LoginScreen extends Component {
       .then((res) => res.json())
       .then(res =>{
         const { loginUser } = res.data;
-        sh.SetToken(loginUser.token).done();
-        sh.SetUser(loginUser.user).done();
+        sh.SetLoginUser(loginUser).done();
         navigate('Home', loginUser);
       })
-      .catch(e => console.log( 'Error sending post: ', e))
+      .catch(e => console.log( 'Error Login Post: ', JSON.stringify(e)))
       .done();
     }
 
-  _loginNavigation({token, user}) { return NavigationActions.navigate({
+  _homeNavigator({token, user}) { return NavigationActions.navigate({
       routeName: 'Home',
       params: {token, user}
     })
   }
 
   componentDidMount(){
-    const { dispatch} = this.props.navigation;
-    const token  = sh.GetToken().then(result => result).catch(e => console.log('getToken error: ',e));
-    const user  = sh.GetUser().then(result => result).catch(e => console.log('getUser error: ',e));
-
-    if( token && user && !this.state.isCached){
-      this.setState({...this.state, isCached: true});
-      dispatch(this._loginNavigation({token, user}))
-    }
+    const { dispatch } = this.props.navigation;
+    sh.GetLoginUser()
+      .then(loginUser => {
+        if(loginUser)
+          dispatch(this._homeNavigator(loginUser))
+      })
+      .catch(e => console.log('Error with GetLoginUser: ', e));
   }
   
   render() {
