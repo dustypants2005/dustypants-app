@@ -69,7 +69,7 @@ export default class LoginScreen extends Component {
       })
       .catch(e => console.log('Error with GetLoginUser: ', e));
   }
-  
+
   render() {
     const {navigate} = this.props.navigation;
     return (

@@ -4,10 +4,7 @@ import storage from '../constants/storage';
 export default {
   GetLoginUser: () => {
     return AsyncStorage.getItem(storage.loginUser)
-    .then(user => {
-      console.log('GetLoginUser: ', user);
-      return user;
-    })
+    .then(user => JSON.parse(user))
     .catch( e => {
       console.log('GetLoginUser error: ', e);
     });

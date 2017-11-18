@@ -35,9 +35,19 @@ export default class HomeScreen extends React.Component {
     .catch(res => console.log('handle search users res: ',res))
   }
 
+  componentDidMount(){
+    sh.GetLoginUser()
+    .then(loginUser => {
+      if(loginUser){
+        this.setState({ ...this.state, me: loginUser.user.username });
+      }
+    })
+    .catch(e => console.log('Error with GetLoginUser: ', e));
+  }
+
   render() {
     const { navigate} = this.props.navigation;
-    
+
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
